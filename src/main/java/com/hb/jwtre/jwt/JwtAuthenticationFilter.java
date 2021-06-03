@@ -1,5 +1,7 @@
 package com.hb.jwtre.jwt;
 
+import com.auth0.jwt.JWT;
+import com.auth0.jwt.algorithms.Algorithm;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.hb.jwtre.auth.PrincipalDetails;
 import com.hb.jwtre.model.User;
@@ -15,6 +17,7 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.Date;
 
 @RequiredArgsConstructor
 public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilter {
@@ -49,6 +52,16 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
     @Override
     protected void successfulAuthentication(HttpServletRequest request, HttpServletResponse response, FilterChain chain, Authentication authResult) throws IOException, ServletException {
         System.out.println("successfulAuthentication 실행됨");
-        super.successfulAuthentication(request, response, chain, authResult);
+        PrincipalDetails principalDetails = (PrincipalDetails) authResult.getPrincipal();
+
+        // Hash 암호방식
+        String jwtToken = JWT.create()
+                .withSubject("cos토큰")
+                .withExpiresAt(new Date(System.currentTimeMillis()+(60000*10)))
+                .withClaim("id", principalDetails.getUser().getId())
+                .withClaim("username", principalDetails.getUsername())
+                .sign(Algorithm.HMAC512("cos"));
+
+        response.addHeader("Authorization", "Bearer "+jwtToken);
     }
 }
