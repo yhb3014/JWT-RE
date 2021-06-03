@@ -1,4 +1,4 @@
-package com.hb.jwtre.auth;
+package com.hb.jwtre.config.auth;
 
 import com.hb.jwtre.model.User;
 import com.hb.jwtre.repository.UserRepository;

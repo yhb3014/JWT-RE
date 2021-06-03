@@ -1,4 +1,4 @@
-package com.hb.jwtre.auth;
+package com.hb.jwtre.config.auth;
 
 import com.hb.jwtre.model.User;
 import lombok.Data;
@@ -21,6 +21,7 @@ public class PrincipalDetails implements UserDetails {
     public Collection<? extends GrantedAuthority> getAuthorities() {
         Collection<GrantedAuthority> authorities = new ArrayList<>();
         user.getRoleList().forEach(r->{
+            System.out.println("r : "+r);
             authorities.add(()->{return r;});
         });
         return authorities;
